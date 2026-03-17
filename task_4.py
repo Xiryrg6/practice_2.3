@@ -8,7 +8,7 @@ from tkinter import ttk
 
 def profile(user_data):
     show_frame(frame_profile)
-    update_ui()
+    update_ui(frame_profile)
     ttk.Button(frame_profile, text="Обратно", command=lambda:show_frame(frame_menu)).pack(anchor='nw')
     ttk.Label(frame_profile, text=f"Профиль пользователя", font=("", 14)).pack(pady=10)
     frame = tk.Frame(frame_profile, bg="light gray", highlightbackground="black", highlightthickness=2)
@@ -26,7 +26,7 @@ def profile(user_data):
 
 def repos():
     show_frame(frame_repos)
-    update_ui()
+    update_ui(frame_repos)
 
     frame = tk.Frame(frame_repos)
     frame.pack(fill=X)
@@ -117,7 +117,7 @@ def show_frame(frame):
     frame.tkraise()
 
 
-def update_ui():
+def update_ui(frame):
     for widget in frame.winfo_children():
         widget.destroy()
 
