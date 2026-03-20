@@ -79,6 +79,12 @@ def show_groups():
 
 
 def group_operation(groups, currencies, flag):
+    def task():
+        time.sleep(2)
+        label_3["text"] = ''
+        butt_1.config(state="normal")
+        butt_2.config(state="normal")
+
     name = entry_3.get()
     if name not in groups:
         label_3["text"] = "Такой группы нет"
@@ -102,24 +108,24 @@ def group_operation(groups, currencies, flag):
             else:
                 label_3["text"] = "Данная валюта не входит в эту группу"
 
-    def task():
-        time.sleep(2)
-        label_3["text"] = ''
     threading.Thread(target=task).start()
 
 
 def create_group():
-    name = entry_2.get()
-    if name in groups:
-        label_2["text"] = "Эта группа уже существует"
-    else:
-        groups[name] = []
-        save_groups(groups)
-        label_2["text"] = f"Группа '{name}' создана."
-    
     def task():
         time.sleep(2)
         label_2["text"] = ''
+        butt_3.config(state="normal")
+
+    name = entry_2.get()
+    if name in groups:
+        label_2["text"] = "Эта группа уже существует"
+        threading.Thread(target=task).start()
+        return
+    groups[name] = []
+    save_groups(groups)
+    label_2["text"] = f"Группа '{name}' создана."
+    
     threading.Thread(target=task).start()
 
 
@@ -153,7 +159,7 @@ frame_butt_1.columnconfigure(0, weight=1)
 frame_butt_1.columnconfigure(1, weight=1)
 
 ttk.Button(frame_butt_1, text="Обратно", command=lambda:show_frame(frame_menu)).grid(column=0, row=1, sticky="w")
-ttk.Button(frame_butt_1, text="Просмотреть валюту по коду", command=lambda:show_frame(frame_view_currency)).grid(column=1, row=1, sticky='e')
+ttk.Button(frame_butt_1, text="Просмотреть валюту по коду", command=lambda:[show_frame(frame_view_currency), entry_1.delete(0, END), label_1.config(text='')]).grid(column=1, row=1, sticky='e')
 
 ttk.Label(frame_show_all_currencies, text="Текущие обменные курсы всех валют", font=("", 14)).pack(pady=10)
 listbox_1 = Listbox(frame_show_all_currencies)
@@ -182,8 +188,8 @@ frame_butt_2.columnconfigure(1, weight=1)
 frame_butt_2.columnconfigure(2, weight=1)
 
 ttk.Button(frame_butt_2, text="Обратно", command=lambda:show_frame(frame_menu)).grid(column=0, row=0, sticky='w')
-ttk.Button(frame_butt_2, text="Изменить группу", command=lambda: show_frame(frame_add_or_delet_currency)).grid(column=1, row=0)
-ttk.Button(frame_butt_2, text="Создать группу валют", command=lambda:show_frame(frame_create_group)).grid(column=2, row=0, sticky='e')
+ttk.Button(frame_butt_2, text="Изменить группу", command=lambda: [show_frame(frame_add_or_delet_currency), entry_3.delete(0, END), entry_4.delete(0, END)]).grid(column=1, row=0)
+ttk.Button(frame_butt_2, text="Создать группу валют", command=lambda:[show_frame(frame_create_group), entry_2.delete(0, END)]).grid(column=2, row=0, sticky='e')
 
 ttk.Label(frame_show_groups, text="Группы", font=("", 14)).pack(pady=10)
 listbox_2 = Listbox(frame_show_groups)
@@ -207,8 +213,10 @@ frame_butt_3.pack(fill="x", pady=10)
 frame_butt_3.columnconfigure(0, weight=1)
 frame_butt_3.columnconfigure(1, weight=1)
 
-tk.Button(frame_butt_3, text="Добавить", bg="green", width=15, command=lambda: [group_operation(groups, currencies, True), entry_1.delete(0, last="end")]).grid(column=0, row=0)
-tk.Button(frame_butt_3, text="Удалить", bg="red", width=15, command=lambda: [group_operation(groups, currencies, False), entry_1.delete(0, last="end")]).grid(column=1, row=0)
+butt_1 = tk.Button(frame_butt_3, text="Добавить", bg="green", width=15, command=lambda: [butt_1.config(state="disabled"), group_operation(groups, currencies, True)])
+butt_1.grid(column=0, row=0)
+butt_2 = tk.Button(frame_butt_3, text="Удалить", bg="red", width=15, command=lambda: [butt_2.config(state="disabled"), group_operation(groups, currencies, False)])
+butt_2.grid(column=1, row=0)
 label_3 = ttk.Label(frame_add_or_delet_currency)
 label_3.pack()
 
@@ -218,7 +226,8 @@ ttk.Button(frame_create_group, text="Обратно", command=lambda:[show_frame
 ttk.Label(frame_create_group, text="Введите название группы", font=("", 12)).pack(pady=10)
 entry_2 = ttk.Entry(frame_create_group)
 entry_2.pack(pady=10)
-ttk.Button(frame_create_group, text="Создать", command=lambda:create_group()).pack(pady=5)
+butt_3 = ttk.Button(frame_create_group, text="Создать", command=lambda:[butt_3.config(state="disabled"), create_group()])
+butt_3.pack(pady=5)
 label_2 = ttk.Label(frame_create_group)
 label_2.pack(pady=10)
 
